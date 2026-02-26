@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if job %}Edit Job{% else %}Create Job{% endif %} - Work-Study Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% if job %}{% url 'job_detail' job.id %}{% else %}{% url 'job_list' %}{% endif %}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{% if job %}<i class="bi bi-pencil"></i> Edit Job Posting{% else %}<i class="bi bi-plus-circle"></i> Create New Job Posting{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Job Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ job.title|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="department" name="department" value="{{ job.department|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Job Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required>{{ job.description|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="required_hours" class="form-label">Required Hours per Week</label>
+                                <input type="number" class="form-control" id="required_hours" name="required_hours" value="{{ job.required_hours|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="pay_rate" class="form-label">Pay Rate ($/hour)</label>
+                                <input type="number" class="form-control" id="pay_rate" name="pay_rate" value="{{ job.pay_rate|default:'' }}" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if job %}
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if job.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">Active</label>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {% if job %}Update Job{% else %}Create Job{% endif %}
+                        </button>
+                        <a href="{% if job %}{% url 'job_detail' job.id %}{% else %}{% url 'job_list' %}{% endif %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

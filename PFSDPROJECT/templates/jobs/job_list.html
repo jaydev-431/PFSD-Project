@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Listings - Work-Study Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-briefcase"></i> Available Job Postings</h2>
+        <p class="text-muted">Find your perfect work-study position</p>
+    </div>
+    {% if user.is_admin %}
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Job
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for job in jobs %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    {% if job.is_active %}
+                    <span class="badge bg-success">Active</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    <i class="bi bi-building"></i> {{ job.department }}
+                </h6>
+                <p class="card-text">{{ job.description|truncatewords:30 }}</p>
+                
+                <div class="mb-3">
+                    <span class="me-3">
+                        <i class="bi bi-clock"></i> {{ job.required_hours }} hours/week
+                    </span>
+                    <span>
+                        <i class="bi bi-currency-dollar"></i> ${{ job.pay_rate }}/hour
+                    </span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-outline-primary">
+                        View Details
+                    </a>
+                    {% if not user.is_admin and job.id not in applied_jobs and job.is_active %}
+                    <a href="{% url 'job_apply' job.id %}" class="btn btn-sm btn-success">
+                        <i class="bi bi-send"></i> Apply Now
+                    </a>
+                    {% elif job.id in applied_jobs %}
+                    <span class="badge bg-info">Applied</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Posted: {{ job.created_at|date:"M d, Y" }}</small>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No job postings available at the moment. Check back later!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

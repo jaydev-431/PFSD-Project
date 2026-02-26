@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Log Work Hours - Work-Study Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% url 'work_hour_list' %}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back to Work Hours
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-clock"></i> Log Work Hours</h4>
+            </div>
+            <div class="card-body">
+                {% if approved_jobs %}
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="job" class="form-label">Select Job</label>
+                        <select class="form-select" id="job" name="job" required>
+                            <option value="">-- Select a Job --</option>
+                            {% for app in approved_jobs %}
+                            <option value="{{ app.job.id }}">{{ app.job.title }} - {{ app.job.department }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="hours_worked" class="form-label">Hours Worked</label>
+                        <input type="number" class="form-control" id="hours_worked" name="hours_worked" step="0.5" min="0.5" max="24" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="task_description" class="form-label">Task Description</label>
+                        <textarea class="form-control" id="task_description" name="task_description" rows="4" placeholder="Describe what you did..." required></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Submit Work Hours
+                        </button>
+                        <a href="{% url 'work_hour_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-circle"></i> You need to be approved for at least one job before logging work hours.
+                    <hr>
+                    <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

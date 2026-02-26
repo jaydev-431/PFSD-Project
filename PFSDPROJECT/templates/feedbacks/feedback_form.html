@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Give Feedback - Work-Study Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% url 'feedback_list' %}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back to Feedback
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-chat-dots"></i> Give Feedback to {{ student.username }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="work_hour" class="form-label">Related Work Hour (Optional)</label>
+                        <select class="form-select" id="work_hour" name="work_hour">
+                            <option value="">-- General Feedback --</option>
+                            {% for hour in work_hours %}
+                            <option value="{{ hour.id }}">{{ hour.date }} - {{ hour.hours_worked }}h - {{ hour.job.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select class="form-select" id="rating" name="rating" required>
+                            <option value="">-- Select Rating --</option>
+                            <option value="5">5 Stars - Excellent</option>
+                            <option value="4">4 Stars - Very Good</option>
+                            <option value="3">3 Stars - Good</option>
+                            <option value="2">2 Stars - Needs Improvement</option>
+                            <option value="1">1 Star - Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="feedback" class="form-label">Feedback</label>
+                        <textarea class="form-control" id="feedback" name="feedback" rows="5" placeholder="Write your feedback here..." required></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Submit Feedback
+                        </button>
+                        <a href="{% url 'feedback_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
